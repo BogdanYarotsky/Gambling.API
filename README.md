@@ -34,6 +34,9 @@ Response payload after a loss:
   "points": "-100"
 }
 
+## How to reset points balance:
+Clear cookies to make server forget your debts
+
 ## Setting Up & Running locally
 - Clone the repository.
 - Navigate to the project directory.
