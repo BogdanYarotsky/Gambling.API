@@ -14,8 +14,6 @@ public class CookiesAuthService : IAuthService
 
     public async Task<string> GetCurrentUserIdAsync()
     {
-
-        throw new NotImplementedException();
         var ctx = _ctxAccessor.HttpContext;
 
         if (ctx is null)
