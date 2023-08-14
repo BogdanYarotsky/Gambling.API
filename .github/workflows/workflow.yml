@@ -2,6 +2,7 @@ name: "CI/CD"
 on: [push]
 
 env:
+  API_CSPROJ_PATH: Gambling.API/Gambling.API.csproj
   AZURE_WEBAPP_NAME: gambling-api
   AZURE_WEBAPP_PACKAGE_PATH: "./app"
   DOTNET_VERSION: "7.0"
@@ -19,8 +20,7 @@ jobs:
           dotnet restore
           dotnet build --configuration Release
           dotnet test
-          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-          ls bin '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+          dotnet publish '${{ env.API_CSPROJ_PATH }}' -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       - name: deploy
         uses: azure/webapps-deploy@v2
         with:
