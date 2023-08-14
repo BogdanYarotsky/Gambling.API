@@ -91,18 +91,18 @@ public class GamblingTests
     public async Task LosingDeductsPointsFromAccount()
     {
         var bet = new BetRequest(200, 3);
-        var response = await MakeLosingBetAsync(bet, "Alice");
+        var response = await MakeLosingBetAsync(bet, "Henry");
         Assert.AreEqual(10_000 - bet.Points, response.Account);
         Assert.AreEqual($"-{bet.Points}", response.Points);
-        Assert.AreEqual("lost", response.Points);
+        Assert.AreEqual("lost", response.Status);
     }
 
     [TestMethod]
     public async Task MultiUserScenarioIsHandled()
     {
-        var aliceBet = new BetRequest(200, 3);
-        var aliceResponse = await MakeLosingBetAsync(aliceBet, "Alice");
-        Assert.AreEqual(10_000 - aliceBet.Points, aliceResponse.Account);
+        var archieBet = new BetRequest(200, 3);
+        var archieResponse = await MakeLosingBetAsync(archieBet, "Archie");
+        Assert.AreEqual(10_000 - archieBet.Points, archieResponse.Account);
 
         var bobBet = new BetRequest(700, 5);
         var bobResponse = await MakeWinningBetAsync(bobBet, "Bob");
@@ -120,9 +120,9 @@ public class GamblingTests
         var secondBet = new BetRequest(50, 6);
         var thirdBet = new BetRequest(800, 7);
 
-        var firstResponse = await MakeLosingBetAsync(firstBet, "Alice");
-        var secondResponse = await MakeWinningBetAsync(secondBet, "Alice");
-        var thirdResponse = await MakeWinningBetAsync(thirdBet, "Alice");
+        var firstResponse = await MakeLosingBetAsync(firstBet, "Mortimer");
+        var secondResponse = await MakeWinningBetAsync(secondBet, "Mortimer");
+        var thirdResponse = await MakeWinningBetAsync(thirdBet, "Mortimer");
 
         var expectedBalanceAfterFirstBet = 10_000 - firstBet.Points;
         Assert.AreEqual(expectedBalanceAfterFirstBet, firstResponse.Account);
