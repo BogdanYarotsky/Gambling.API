@@ -39,4 +39,4 @@ Response payload after a loss:
 - Navigate to the project directory.
 - Use the command dotnet restore to restore the required packages.
 - Run the API using the dotnet run command.
-- Access the API on [http://localhost:5000](http://localhost:5173) (default configuration).
+- Access the API on [http://localhost:5173](http://localhost:5173) (default configuration).
