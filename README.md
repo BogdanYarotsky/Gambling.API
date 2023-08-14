@@ -10,7 +10,7 @@ The player can place a bet on a randomly generated number between 0-9.
 If the player's prediction is correct, they win 9 times their stake.
 
 ## API Endpoints
-Endpoint: /
+Endpoint: "/"
 Method: POST
 
 Request payload example:
