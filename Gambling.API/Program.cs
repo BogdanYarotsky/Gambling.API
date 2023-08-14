@@ -18,7 +18,7 @@ public static class Program
         var app = builder.Build();
         app.WrapUnhandledExceptionsInProblemDetails();
         app.UseAuthentication();
-        app.MapPost("/bet", async (BetRequest request, GamblingService service) => await service.BetAsync(request));
+        app.MapPost("/", async (BetRequest request, GamblingService service) => await service.BetAsync(request));
         return app;
     }
 
