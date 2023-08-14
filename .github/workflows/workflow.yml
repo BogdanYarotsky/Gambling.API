@@ -20,7 +20,6 @@ jobs:
           dotnet build
           dotnet test
           dotnet publish '${{ env.API_CSPROJ_PATH }}' -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-          ls '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       - name: deploy
         uses: azure/webapps-deploy@v2
         with:
