@@ -1,5 +1,5 @@
 # Try it out
-This app is hosted in Azure using CI/CD pipeline in the branch. Url: https://gambling-api.azurewebsites.net/
+This app is hosted on Azure: https://gambling-api.azurewebsites.net/
 
 # Gambling API
 Welcome to the Gambling API! Built with ASP.NET Core, this application allows players to bet on a randomly generated number between 0-9. With a starting balance of 10,000 points, players have the opportunity to increase their points by placing bets and predicting the right number.
