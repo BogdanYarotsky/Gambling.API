@@ -11,6 +11,7 @@ If the player's prediction is correct, they win 9 times their stake.
 
 ## API Endpoints
 Endpoint: "/"
+
 Method: POST
 
 Request payload example:
