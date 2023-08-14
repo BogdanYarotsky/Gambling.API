@@ -34,9 +34,9 @@ Response payload after a loss:
   "points": "-100"
 }
 
-## Setting Up & Running
+## Setting Up & Running locally
 - Clone the repository.
 - Navigate to the project directory.
 - Use the command dotnet restore to restore the required packages.
 - Run the API using the dotnet run command.
-- Access the API on http://localhost:5000 (default configuration).
+- Access the API on [http://localhost:5000](http://localhost:5173) (default configuration).
