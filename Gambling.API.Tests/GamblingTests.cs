@@ -1,5 +1,3 @@
-using Gambling.API.Models;
-
 namespace Gambling.API.Tests;
 
 [TestClass]
@@ -73,7 +71,6 @@ public class GamblingTests
         var aliceResponse = await MakeMockBetAsyncUnwrap(bet, "Alice");
         var bobResponse = await MakeMockBetAsyncUnwrap(bet, "Bob");
         var charlieResponse = await MakeMockBetAsyncUnwrap(bet, "Charlie");
-
         Assert.AreEqual(10_000, aliceResponse.Account);
         Assert.AreEqual(10_000, bobResponse.Account);
         Assert.AreEqual(10_000, charlieResponse.Account);
@@ -82,14 +79,60 @@ public class GamblingTests
     [TestMethod]
     public async Task WinGives9TimesTheBetAsReward()
     {
-        const int winningNumber = 3;
-        var bet = new BetRequest(200, winningNumber);
-        var response = await MakeMockBetAsyncUnwrap(bet, "Alice", winningNumber);
+        var bet = new BetRequest(200, 3);
+        var response = await MakeWinningBetAsync(bet, "Alice");
         var expectedWin = bet.Points * 9;
         Assert.AreEqual(10_000 + expectedWin, response.Account);
         Assert.AreEqual($"+{expectedWin}", response.Points);
+        Assert.AreEqual("won", response.Status);
     }
 
+    [TestMethod]
+    public async Task LosingDeductsPointsFromAccount()
+    {
+        var bet = new BetRequest(200, 3);
+        var response = await MakeLosingBetAsync(bet, "Alice");
+        Assert.AreEqual(10_000 - bet.Points, response.Account);
+        Assert.AreEqual($"-{bet.Points}", response.Points);
+        Assert.AreEqual("lost", response.Points);
+    }
+
+    [TestMethod]
+    public async Task MultiUserScenarioIsHandled()
+    {
+        var aliceBet = new BetRequest(200, 3);
+        var aliceResponse = await MakeLosingBetAsync(aliceBet, "Alice");
+        Assert.AreEqual(10_000 - aliceBet.Points, aliceResponse.Account);
+
+        var bobBet = new BetRequest(700, 5);
+        var bobResponse = await MakeWinningBetAsync(bobBet, "Bob");
+        Assert.AreEqual(10_000 + bobBet.Points * 9, bobResponse.Account);
+
+        var charlieBet = new BetRequest(555, 2);
+        var charlieResponse = await MakeLosingBetAsync(charlieBet, "Charlie");
+        Assert.AreEqual(10_000 - charlieBet.Points, charlieResponse.Account);
+    }
+
+    [TestMethod]
+    public async Task BalanceIsPreservedBetweenBets()
+    {
+        var firstBet = new BetRequest(300, 5);
+        var secondBet = new BetRequest(50, 6);
+        var thirdBet = new BetRequest(800, 7);
+
+        var firstResponse = await MakeLosingBetAsync(firstBet, "Alice");
+        var secondResponse = await MakeWinningBetAsync(secondBet, "Alice");
+        var thirdResponse = await MakeWinningBetAsync(thirdBet, "Alice");
+
+        var expectedBalanceAfterFirstBet = 10_000 - firstBet.Points;
+        Assert.AreEqual(expectedBalanceAfterFirstBet, firstResponse.Account);
+
+        var expectedBalanceAfterSecondBet = expectedBalanceAfterFirstBet + secondBet.Points * 9;
+        Assert.AreEqual(expectedBalanceAfterSecondBet, secondResponse.Account);
+
+        var expectedBalanceAfterThirdBet = expectedBalanceAfterSecondBet + thirdBet.Points * 9;
+        Assert.AreEqual(expectedBalanceAfterThirdBet, thirdResponse.Account);
+    }
 
     private static async Task<IResult> MakeMockBetAsync(BetRequest request, string? userId = null, int? winningNumber = null)
     {
@@ -104,6 +147,15 @@ public class GamblingTests
         var response = await MakeMockBetAsync(request, userId, winningNumber);
         var okResponse = (Ok<BetResponse>)response;
         return okResponse.Value ?? throw new NullReferenceException("response was null for some reason");
+    }
+    private static async Task<BetResponse> MakeWinningBetAsync(BetRequest request, string userId)
+    {
+        return await MakeMockBetAsyncUnwrap(request, userId, request.Number);
+    }
+
+    private static async Task<BetResponse> MakeLosingBetAsync(BetRequest request, string userId)
+    {
+        return await MakeMockBetAsyncUnwrap(request, userId, request.Number == 0 ? 1 : 0);
     }
 
     private class MockRngService : IRandomService
