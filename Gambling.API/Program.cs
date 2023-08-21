@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Diagnostics;
+using System.Security.Cryptography;
 
 namespace Gambling.API;
+
+
+public delegate int RngFunc(int fromInclusive, int toExclusive);
 
 public static class Program
 {
@@ -17,16 +21,18 @@ public static class Program
         var app = builder.Build();
         app.WrapUnhandledExceptionsInProblemDetails();
         app.UseAuthentication();
-        app.MapPost("/", async (BetRequest request, GamblingService service) => await service.BetAsync(request));
+        app.MapPost("/api/v1/bet", async (BetHttpRequest request, BetHttpHandler handler) => await handler.HandleAsync(request));
         return app;
     }
 
     public static IServiceCollection AddGamblingServices(this IServiceCollection services)
     {
-        services.AddSingleton<IRandomService, CryptoRngService>();
+        services.AddSingleton<RngFunc>(_ => RandomNumberGenerator.GetInt32);
+        services.AddScoped<IBetRepository, InMemoryBetRepository>();
         services.AddScoped<IAuthService, CookiesAuthService>();
-        services.AddScoped<GamblingService>();
+        services.AddScoped<BetHttpHandler>();
         services.AddHttpContextAccessor();
+        services.AddScoped<BetService>();
         return services;
     }
 

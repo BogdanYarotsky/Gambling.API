@@ -2,5 +2,5 @@
 
 public interface IRandomService
 {
-    int GetNumber(int min, int max);
+    int GetNumber(int min, int toInclusive);
 }
